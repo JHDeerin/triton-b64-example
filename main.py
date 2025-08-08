@@ -26,7 +26,7 @@ def send_request(image_path):
         }
     ]
 
-    outputs = [{"name": "OUTPUT_IMAGE_TENSOR", "name": "OUTPUT_IMAGE_TENSOR"}]
+    outputs = [{"name": "OUTPUT_IMAGE_TENSOR"}]
 
     payload = {"inputs": inputs, "outputs": outputs}
 

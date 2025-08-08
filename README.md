@@ -9,9 +9,8 @@ A basic example of how to pass a base64-encoded JPEG image into an [NVIDIA Trito
 -   Data types: your request with the base64 image should be set to `BYTES`, while the Triton server config should set the input to `TYPE_STRING`. This was my biggest confusion (I initially thought they should both be set to the same thing).
 -   The request's `data` field should be an array with a string in it, like so: `"data": ["myb64data..."]` - 
 -   The Triton config file should expect an input shape of `[1]` (i.e. each batch is a 1D array with exactly 1 string element - that string element can be of arbitrary size). Your request shape should be `[1]` - UNLESS you're using batching...
--   If `max_batch_size` > 0 in your Triton config, you're using batching. You'll need to include the batch size in your requests, and modify `model.py` to handle the batches. On the request side, you can do this in by changing the size to `[batch_size, 1]` and nesting your `data` arrays with however many images you want to send in the batch: `[[img1_b64], [img2_b64], ...]`. On the model side, a single request's `in_tensor.numpy()` will now return an array with shape `[batch_size, 1]`, which the model will need to handle accordingly.
+-   If `max_batch_size` isn't 0 in your Triton config, you're using batching. You'll need to include the batch size in your requests, and modify `model.py` to handle the batches. On the request side, you can do this by changing the size to `[batch_size, 1]` and nesting your data arrays with however many images you want to send in the batch: `[[img1_b64], [img2_b64], ...]`. On the model side, a single request's `in_tensor.numpy()` will now return an array with shape `[batch_size, 1]`, which the model will need to handle accordingly.
     -   `max_batch_size: 0` seems to be a special case where `in_tensor.numpy()` will just return a 1D array, not a 2D array containing each 1D-batch. In this case, nesting the data arrays isn't necessary.
-
 
 ## How to run this
 
